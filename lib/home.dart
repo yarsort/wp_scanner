@@ -25,8 +25,6 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
   bool loadingData = false;
   late bool visible;
 
-  double heightScreen = 0;
-  double widthScreen = 0;
   double widthDrawer = 70;
 
   bool validateSearch = false;
