@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:wp_scanner/controllers/api_controller.dart';
@@ -71,18 +72,25 @@ Future<List<Product>> dbReadSellProductsFromWeb(uidSell, searchString) async {
 
 Future<Product> dbReadProductByBarcodeFromWeb(productBarcode) async {
   /// Connection address
-  String connectionUrl = await getBaseUrl() + '/products?barcode=' + productBarcode;
+  String connectionUrl = await getBaseUrl();
 
   Product product = Product();
+
+  Map dataMap = {
+    'method': 'getProductByBarcode',
+    'barcode': productBarcode,
+    'authorization': '00000000-0000-0000-0000-000000000125',
+  };
 
   /// Get data from server
   try {
     var dio = Dio();
-    final response = await dio.get(connectionUrl,
+    final response = await dio.post(connectionUrl,
         options: Options(headers: {
           'Access-Control-Allow-Origin': '*',
           HttpHeaders.contentTypeHeader: 'application/json',
-        }));
+        }),
+        data: jsonEncode(dataMap));
 
     switch (response.statusCode) {
       case 200:

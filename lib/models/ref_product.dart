@@ -20,11 +20,11 @@ class Product {
   String picture = ''; // Картинка основная
   DateTime dateEdit = DateTime.now(); // Дата редактирования
 
-  List<ProductCharacteristic> itemsProductCharacteristic = [];
-  List<ProductProperty> itemsProductProperty = [];
-  List<ProductImage> itemsProductImage = [];
-  List<AccumProductPrice> itemsProductPrice = [];
-  List<AccumProductRest> itemsProductRest = [];
+  List<ProductCharacteristic> characteristics = [];
+  List<ProductProperty> properties = [];
+  List<ProductImage> images = [];
+  List<AccumProductPrice> prices = [];
+  List<AccumProductRest> rests = [];
 
   Product();
 
@@ -49,23 +49,21 @@ class Product {
     picture = json['picture'] ?? '00000000-0000-0000-0000-000000000000';
     dateEdit = DateTime.parse(json['dateEdit'] ?? DateTime.now().toIso8601String());
 
-    if (json['itemsProductCharacteristic'] != null) {
-      itemsProductCharacteristic =
-          List<dynamic>.from(json['itemsProductCharacteristic']).map((i) => ProductCharacteristic.fromJson(i)).toList();
+    if (json['characteristics'] != null) {
+      characteristics =
+          List<dynamic>.from(json['characteristics']).map((i) => ProductCharacteristic.fromJson(i)).toList();
     }
-    if (json['itemsProductProperty'] != null) {
-      itemsProductProperty =
-          List<dynamic>.from(json['itemsProductProperty']).map((i) => ProductProperty.fromJson(i)).toList();
+    if (json['properties'] != null) {
+      properties = List<dynamic>.from(json['properties']).map((i) => ProductProperty.fromJson(i)).toList();
     }
-    if (json['itemsProductImage'] != null) {
-      itemsProductImage = List<dynamic>.from(json['itemsProductImage']).map((i) => ProductImage.fromJson(i)).toList();
+    if (json['images'] != null) {
+      images = List<dynamic>.from(json['images']).map((i) => ProductImage.fromJson(i)).toList();
     }
-    if (json['itemsProductPrice'] != null) {
-      itemsProductPrice =
-          List<dynamic>.from(json['itemsProductPrice']).map((i) => AccumProductPrice.fromJson(i)).toList();
+    if (json['prices'] != null) {
+      prices = List<dynamic>.from(json['prices']).map((i) => AccumProductPrice.fromJson(i)).toList();
     }
-    if (json['itemsProductRest'] != null) {
-      itemsProductRest = List<dynamic>.from(json['itemsProductRest']).map((i) => AccumProductRest.fromJson(i)).toList();
+    if (json['rests'] != null) {
+      rests = List<dynamic>.from(json['rests']).map((i) => AccumProductRest.fromJson(i)).toList();
     }
   }
 
@@ -90,11 +88,11 @@ class Product {
     data['comment'] = comment;
     data['picture'] = picture;
     data['dateEdit'] = dateEdit.toIso8601String();
-    data['itemsProductCharacteristic'] = itemsProductCharacteristic.map((e) => e.toJson()).toList();
-    data['itemsProductProperty'] = itemsProductProperty.map((e) => e.toJson()).toList();
-    data['itemsProductImage'] = itemsProductImage.map((e) => e.toJson()).toList();
-    data['itemsProductPrice'] = itemsProductPrice.map((e) => e.toJson()).toList();
-    data['itemsProductRest'] = itemsProductRest.map((e) => e.toJson()).toList();
+    data['characteristics'] = characteristics.map((e) => e.toJson()).toList();
+    data['properties'] = properties.map((e) => e.toJson()).toList();
+    data['images'] = images.map((e) => e.toJson()).toList();
+    data['prices'] = prices.map((e) => e.toJson()).toList();
+    data['rests'] = rests.map((e) => e.toJson()).toList();
     return data;
   }
 }
@@ -109,6 +107,9 @@ class ProductCharacteristic {
   String barcode = ''; // Штрихкод.
   String comment = ''; // Коммментарий
 
+  List<AccumProductPrice> prices = [];
+  List<AccumProductRest> rests = [];
+
   ProductCharacteristic();
 
   ProductCharacteristic.fromJson(Map<String, dynamic> json) {
@@ -119,6 +120,12 @@ class ProductCharacteristic {
     uidProduct = json['uidProduct'] ?? '';
     barcode = json['barcode'] ?? '';
     comment = json['comment'] ?? '';
+    if (json['prices'] != null) {
+      prices = List<dynamic>.from(json['prices']).map((i) => AccumProductPrice.fromJson(i)).toList();
+    }
+    if (json['rests'] != null) {
+      rests = List<dynamic>.from(json['rests']).map((i) => AccumProductRest.fromJson(i)).toList();
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -130,6 +137,8 @@ class ProductCharacteristic {
     data['uidProduct'] = uidProduct;
     data['barcode'] = barcode;
     data['comment'] = comment;
+    data['prices'] = prices.map((e) => e.toJson()).toList();
+    data['rests'] = rests.map((e) => e.toJson()).toList();
     return data;
   }
 }
@@ -199,7 +208,10 @@ class AccumProductPrice {
   String uidProduct = '';
   String uidProductCharacteristic = '';
   String uidUnit = '';
+  String nameCurrency = '';
   double price = 0.0;
+  double course = 0.0;
+  double multiplicity = 0.0;
 
   AccumProductPrice();
 
@@ -209,7 +221,10 @@ class AccumProductPrice {
     uidProduct = json["uidProduct"] ?? '';
     uidProductCharacteristic = json["uidProductCharacteristic"] ?? '';
     uidUnit = json["uidUnit"] ?? '';
-    price = double.parse(json["price"] ?? 0.0);
+    nameCurrency = json["nameCurrency"] ?? '';
+    price = double.parse(json["price"].toString());
+    course = double.parse(json["course"].toString());
+    multiplicity = double.parse(json["multiplicity"].toString());
   }
 
   Map<String, dynamic> toJson() {
@@ -219,7 +234,10 @@ class AccumProductPrice {
     data['uidProduct'] = uidProduct;
     data['uidProductCharacteristic'] = uidProductCharacteristic;
     data['uidUnit'] = uidUnit;
+    data['nameCurrency'] = nameCurrency;
     data['price'] = price;
+    data['course'] = course;
+    data['multiplicity'] = multiplicity;
     return data;
   }
 }
@@ -231,7 +249,10 @@ class AccumProductRest {
   String uidProduct = '';
   String uidProductCharacteristic = '';
   String uidUnit = '';
-  double count = 0.0;
+  double rest = 0.0;
+  double transit = 0.0;
+  double reserved = 0.0;
+  double freeRest = 0.0;
 
   AccumProductRest();
 
@@ -241,7 +262,10 @@ class AccumProductRest {
     uidProduct = json["uidProduct"] ?? '';
     uidProductCharacteristic = json["uidProductCharacteristic"] ?? '';
     uidUnit = json["uidUnit"] ?? '';
-    count = double.parse(json["count"] ?? 0.0);
+    rest = double.parse(json["rest"].toString());
+    transit = double.parse(json["transit"].toString());
+    reserved = double.parse(json["reserved"].toString());
+    freeRest = double.parse(json["freeRest"].toString());
   }
 
   Map<String, dynamic> toJson() {
@@ -251,7 +275,10 @@ class AccumProductRest {
     data['uidProduct'] = uidProduct;
     data['uidProductCharacteristic'] = uidProductCharacteristic;
     data['uidUnit'] = uidUnit;
-    data['count'] = count;
+    data['rest'] = rest;
+    data['transit'] = transit;
+    data['reserved'] = reserved;
+    data['freeRest'] = freeRest;
     return data;
   }
 }

@@ -35,8 +35,11 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
   String urlPicture = '';
   String pathPicture = '';
 
-  List<String> listProperties = [];
-  List<ProductImage> listPictures = [];
+  List<ProductCharacteristic> listCharacteristics = [];
+  List<ProductProperty> listProperties = [];
+  List<ProductImage> listImages = [];
+  List<AccumProductRest> listRests = [];
+  List<AccumProductPrice> listPrices = [];
 
   TextEditingController textFieldSearchCatalogController = TextEditingController();
 
@@ -129,7 +132,31 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                                         ),
                                         labelText: 'Пошук',
                                         errorText: validateSearch ? 'Ви не вказали строку пошуку!' : null,
-                                        prefixIcon: const Icon(Icons.search),
+                                        //prefixIcon: const Icon(Icons.search),
+                                        suffixIcon: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async {
+                                                _findProduct('3660310110020');
+                                              },
+                                              icon: const Icon(Icons.search, color: Colors.blue),
+                                            ),
+                                            IconButton(
+                                              onPressed: () async {
+                                                //scanBarcodeNormal();
+                                              },
+                                              icon: const Icon(Icons.qr_code_scanner, color: Colors.blue),
+                                            ),
+                                            IconButton(
+                                              onPressed: () async {
+                                                textFieldSearchCatalogController.text = '';
+                                              },
+                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -146,9 +173,200 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                               children: [
                                 Expanded(
                                   flex: 5,
-                                  child: Container(
-                                    child: ListView(
-                                      children: [],
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.all(8.0),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(product.name, style: const TextStyle(fontSize: 20)),
+                                              ],
+                                            )),
+                                        const SizedBox(height: 8),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(8.0),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const Row(
+                                                    children: [
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Характеристика',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Склад',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Залишок',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Резерв',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Транзит',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Вільний залишок',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                    ],
+                                                  ),
+                                                  const Divider(),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        physics: BouncingScrollPhysics(),
+                                                        itemCount: listRests.length,
+                                                        itemBuilder: (context, index) {
+                                                          var item = listRests[index];
+
+                                                          var indexItemCharacteristics = listCharacteristics.indexWhere(
+                                                              (element) =>
+                                                                  element.uid == item.uidProductCharacteristic);
+                                                          var itemCharacteristic =
+                                                              listCharacteristics[indexItemCharacteristics];
+
+                                                          return Row(
+                                                            children: [
+                                                              Expanded(flex: 1, child: Text(itemCharacteristic.name)),
+                                                              Expanded(flex: 1, child: Text(item.nameWarehouse)),
+                                                              Expanded(
+                                                                  flex: 1, child: Text(doubleThreeToString(item.rest))),
+                                                              Expanded(
+                                                                  flex: 1,
+                                                                  child: Text(doubleThreeToString(item.reserved))),
+                                                              Expanded(
+                                                                  flex: 1,
+                                                                  child: Text(doubleThreeToString(item.transit))),
+                                                              Expanded(
+                                                                  flex: 1,
+                                                                  child: Text(doubleThreeToString(item.freeRest))),
+                                                            ],
+                                                          );
+                                                        }),
+                                                  )
+                                                ],
+                                              )),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(8.0),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const Row(
+                                                    children: [
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Характеристика',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Тип ціни',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Ціна',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Валюта',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Курс',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Text(
+                                                            'Кратність',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                          )),
+                                                    ],
+                                                  ),
+                                                  const Divider(),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: listPrices.length,
+                                                        itemBuilder: (context, index) {
+                                                          var item = listPrices[index];
+
+                                                          var indexItemCharacteristics = listCharacteristics.indexWhere(
+                                                              (element) =>
+                                                                  element.uid == item.uidProductCharacteristic);
+                                                          var itemCharacteristic =
+                                                              listCharacteristics[indexItemCharacteristics];
+
+                                                          return Row(
+                                                            children: [
+                                                              Expanded(flex: 1, child: Text(itemCharacteristic.name)),
+                                                              Expanded(flex: 1, child: Text(item.namePrice)),
+                                                              Expanded(
+                                                                  flex: 1, child: Text(doubleToString(item.price))),
+                                                              Expanded(flex: 1, child: Text(item.nameCurrency)),
+                                                              Expanded(
+                                                                  flex: 1,
+                                                                  child: Text(doubleThreeToString(item.course))),
+                                                              Expanded(
+                                                                  flex: 1,
+                                                                  child: Text(doubleThreeToString(item.multiplicity))),
+                                                            ],
+                                                          );
+                                                        }),
+                                                  )
+                                                ],
+                                              )),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -169,17 +387,19 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                const Text('Характиристики:',
-                                                    style: TextStyle(fontSize: 20), textAlign: TextAlign.left),
-                                                ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: listProperties.length,
-                                                    itemBuilder: (context, index) {
-                                                      var propertyItem = listProperties[index];
-                                                      return const ListTile(
-                                                        title: Text('name'),
-                                                      );
-                                                    })
+                                                const Text('Характеристики:',
+                                                    style: TextStyle(fontSize: 16), textAlign: TextAlign.left),
+                                                const Divider(),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: const BouncingScrollPhysics(),
+                                                      itemCount: listCharacteristics.length,
+                                                      itemBuilder: (context, index) {
+                                                        var item = listCharacteristics[index];
+                                                        return Text('${item.name} - ${item.vendorCode}');
+                                                      }),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -197,16 +417,19 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 const Text('Властивості:',
-                                                    style: TextStyle(fontSize: 20), textAlign: TextAlign.left),
-                                                ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: listProperties.length,
-                                                    itemBuilder: (context, index) {
-                                                      var propertyItem = listProperties[index];
-                                                      return const ListTile(
-                                                        title: Text('name'),
-                                                      );
-                                                    })
+                                                    style: TextStyle(fontSize: 16), textAlign: TextAlign.left),
+                                                const Divider(),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: const BouncingScrollPhysics(),
+                                                      itemCount: listProperties.length,
+                                                      itemBuilder: (context, index) {
+                                                        var propertyItem = listProperties[index];
+                                                        return Text(
+                                                            '${propertyItem.nameValue}: ${propertyItem.uidValue}');
+                                                      }),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -224,16 +447,11 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 const Text('Опис:',
-                                                    style: TextStyle(fontSize: 20), textAlign: TextAlign.left),
-                                                ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: listProperties.length,
-                                                    itemBuilder: (context, index) {
-                                                      var propertyItem = listProperties[index];
-                                                      return const ListTile(
-                                                        title: Text('name'),
-                                                      );
-                                                    })
+                                                    style: TextStyle(fontSize: 16), textAlign: TextAlign.left),
+                                                const Divider(),
+                                                Expanded(
+                                                  child: Text(product.description),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -265,30 +483,52 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
     } else {
       await _addProductByBarcode(scannedValue);
     }
+
+    setState(() {});
   }
 
   _addProductByBarcode(productBarcode) async {
-    if (product.barcode != productBarcode) {
-      Product productItem = await dbReadProductByBarcodeFromWeb(productBarcode);
+    listProperties.clear();
+    listCharacteristics.clear();
+    listImages.clear();
+    listPrices.clear();
+    listRests.clear();
 
-      if (productItem.uid.isEmpty) {
-        if (!mounted) return;
-        showErrorMessage('Товар по штрихкоду не знайдено!', context);
-        FlutterBeep.beep(false);
-        return;
-      }
+    Product productScanned = await dbReadProductByBarcodeFromWeb(productBarcode);
 
-      /// Если товар не такой как уже ранее был выбран, значит старый добавим как есть,
-      /// а новый товар обновим на форме
-      if (productItem.uid != product.uid) {
-        return;
-      }
-
-      /// Сохраним штрихкод для более быстрого сканирования
-      product.barcode = productBarcode;
+    if (productScanned.uid.isEmpty) {
+      if (!mounted) return;
+      showErrorMessage('Товар по штрихкоду не знайдено!', context);
+      FlutterBeep.beep(false);
+      return;
     }
 
     FlutterBeep.beep();
+
+    product = productScanned;
+
+    /// Сохраним штрихкод для более быстрого сканирования
+    product.barcode = productBarcode;
+
+    listProperties.addAll(product.properties);
+    listCharacteristics.addAll(product.characteristics);
+    listImages.addAll(product.images);
+    listPrices.addAll(product.prices);
+    listRests.addAll(product.rests);
+
+    /// Добавим остатки характеристик
+    for (var item in product.characteristics) {
+      for (var itemRest in item.rests) {
+        listRests.add(itemRest);
+      }
+    }
+
+    /// Добавим цены характеристик
+    for (var item in product.characteristics) {
+      for (var itemPrice in item.prices) {
+        listPrices.add(itemPrice);
+      }
+    }
   }
 
   _addSellProductsByBarcode(sellBarcode) async {
@@ -297,7 +537,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
 
   _getProductPictures() async {
     urlPicture = '$pathPicture/image?uidFile=${product.picture}';
-    listPictures.clear();
+    listImages.clear();
 
     // Request to server
     ApiResponse response = await getProductPictures(product.uid);
@@ -305,7 +545,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
     // Read response
     if (response.error == null) {
       for (var item in response.data as List<dynamic>) {
-        listPictures.add(item);
+        listImages.add(item);
       }
     } else if (response.error == unauthorized) {
       return;
